@@ -64,12 +64,13 @@ with tab2:
     clientes_disponibles = sorted(set(ingredientes_df.get("Cliente", []).dropna().unique().tolist()))
 
     st.markdown("### Crear nueva receta")
-    cliente_input = st.text_input("Cliente (elige o escribe)", value="", placeholder="Escribe o selecciona un cliente")
-    cliente_sugerido = st.selectbox("Clientes existentes (elige uno para autocompletar)", options=[""] + clientes_disponibles)
-    if cliente_sugerido:
-        cliente_input = cliente_sugerido
+    if clientes_disponibles:
+        cliente_sel = st.selectbox("Selecciona cliente", options=clientes_disponibles)
+    else:
+        st.warning("No hay clientes disponibles. Agrega ingredientes primero.")
+        st.stop()
 
-    ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_input]
+    ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_sel]
 
     with st.form("receta_form"):
         receta_nombre = st.text_input("Nombre de la receta")
@@ -84,7 +85,7 @@ with tab2:
             for ing in ing_sel:
                 fila = ingredientes_cliente[ingredientes_cliente["Nombre"] == ing].iloc[0]
                 recetas_ws.append_row([
-                    cliente_input, receta_nombre, ing, fila["Proveedor"],
+                    cliente_sel, receta_nombre, ing, fila["Proveedor"],
                     cantidades[ing]
                 ])
             st.success("Receta guardada correctamente. Recarga para analizarla.")
