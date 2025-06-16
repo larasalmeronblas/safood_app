@@ -6,7 +6,6 @@ import json
 
 st.set_page_config(page_title="CALCULADORA NUTRICIONAL SAFOOD", layout="wide")
 
-# Logo
 st.image("logo.png", width=150)
 st.title("CALCULADORA NUTRICIONAL SAFOOD")
 
@@ -63,11 +62,15 @@ with tab2:
     st.subheader("Crear y analizar receta")
 
     clientes_disponibles = sorted(set(ingredientes_df.get("Cliente", []).dropna().unique().tolist()))
-    cliente_sel = st.text_input("Cliente", value=clientes_disponibles[0] if clientes_disponibles else "")
-
-    ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_sel]
 
     st.markdown("### Crear nueva receta")
+    cliente_input = st.text_input("Cliente (elige o escribe)", value="", placeholder="Escribe o selecciona un cliente")
+    cliente_sugerido = st.selectbox("Clientes existentes (elige uno para autocompletar)", options=[""] + clientes_disponibles)
+    if cliente_sugerido:
+        cliente_input = cliente_sugerido
+
+    ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_input]
+
     with st.form("receta_form"):
         receta_nombre = st.text_input("Nombre de la receta")
         ing_sel = st.multiselect("Selecciona ingredientes", ingredientes_cliente["Nombre"].tolist())
@@ -81,14 +84,18 @@ with tab2:
             for ing in ing_sel:
                 fila = ingredientes_cliente[ingredientes_cliente["Nombre"] == ing].iloc[0]
                 recetas_ws.append_row([
-                    cliente_sel, receta_nombre, ing, fila["Proveedor"],
+                    cliente_input, receta_nombre, ing, fila["Proveedor"],
                     cantidades[ing]
                 ])
             st.success("Receta guardada correctamente. Recarga para analizarla.")
 
     st.markdown("### Analizar receta existente")
-    receta_sel = st.selectbox("Selecciona receta", recetas_df["Receta"].unique())
-    receta_df = recetas_df[(recetas_df["Cliente"] == cliente_sel) & (recetas_df["Receta"] == receta_sel)]
+    cliente_analisis = st.selectbox("Selecciona cliente para analizar", options=clientes_disponibles)
+    recetas_cliente = recetas_df[recetas_df["Cliente"] == cliente_analisis]
+    recetas_unicas = recetas_cliente["Receta"].dropna().unique().tolist()
+    receta_sel = st.selectbox("Selecciona receta", recetas_unicas)
+
+    receta_df = recetas_cliente[recetas_cliente["Receta"] == receta_sel]
 
     if not receta_df.empty:
         receta_merge = receta_df.merge(
