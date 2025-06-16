@@ -62,11 +62,8 @@ with tab1:
 with tab2:
     st.subheader("Crear y analizar receta")
 
-    clientes_disponibles = ingredientes_df["Cliente"].dropna().unique().tolist()
-    if clientes_disponibles:
-        cliente_sel = st.selectbox("Selecciona cliente", clientes_disponibles)
-    else:
-        cliente_sel = st.text_input("Introduce el nombre del cliente")
+    clientes_disponibles = sorted(set(ingredientes_df.get("Cliente", []).dropna().unique().tolist()))
+    cliente_sel = st.text_input("Cliente", value=clientes_disponibles[0] if clientes_disponibles else "")
 
     ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_sel]
 
