@@ -24,7 +24,6 @@ except Exception as e:
     st.error("No se encontraron las hojas 'Ingredientes' o 'Recetas'.")
     st.stop()
 
-# Leer datos actuales
 ingredientes_df = pd.DataFrame(ingredientes_ws.get_all_records())
 recetas_df = pd.DataFrame(recetas_ws.get_all_records())
 
@@ -62,7 +61,13 @@ with tab1:
 # TAB 2: Recetas
 with tab2:
     st.subheader("Crear y analizar receta")
-    cliente_sel = st.selectbox("Selecciona cliente", ingredientes_df["Cliente"].unique())
+
+    clientes_disponibles = ingredientes_df["Cliente"].dropna().unique().tolist()
+    if clientes_disponibles:
+        cliente_sel = st.selectbox("Selecciona cliente", clientes_disponibles)
+    else:
+        cliente_sel = st.text_input("Introduce el nombre del cliente")
+
     ingredientes_cliente = ingredientes_df[ingredientes_df["Cliente"] == cliente_sel]
 
     st.markdown("### Crear nueva receta")
