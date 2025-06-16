@@ -4,10 +4,13 @@ import pandas as pd
 import gspread
 import json
 
-st.set_page_config(page_title="SAFood Nutricional", layout="wide")
-st.title("📊 SAFood – Calculadora Nutricional con Google Sheets")
+st.set_page_config(page_title="CALCULADORA NUTRICIONAL SAFOOD", layout="wide")
 
-# Autenticación
+# Logo
+st.image("logo.png", width=150)
+st.title("CALCULADORA NUTRICIONAL SAFOOD")
+
+# Leer secretos
 sa_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
 sheet_id = st.secrets["GOOGLE_SHEET_ID"]
 gc = gspread.service_account_from_dict(sa_info)
@@ -27,7 +30,7 @@ recetas_df = pd.DataFrame(recetas_ws.get_all_records())
 
 tab1, tab2 = st.tabs(["➕ Cargar ingredientes", "🧪 Crear y analizar receta"])
 
-# ---------------------- TAB 1: Cargar ingredientes ----------------------
+# TAB 1: Ingredientes
 with tab1:
     st.subheader("Añadir nuevo ingrediente")
     with st.form("ingrediente_form"):
@@ -56,7 +59,7 @@ with tab1:
             ingredientes_ws.append_row(nuevo)
             st.success("Ingrediente guardado correctamente.")
 
-# ---------------------- TAB 2: Crear y analizar receta ----------------------
+# TAB 2: Recetas
 with tab2:
     st.subheader("Crear y analizar receta")
     cliente_sel = st.selectbox("Selecciona cliente", ingredientes_df["Cliente"].unique())
