@@ -1,3 +1,1 @@
 
-# Código ya proporcionado antes...
-# Aquí pondrías el código de app.py restaurado
