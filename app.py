@@ -4,10 +4,10 @@ import pandas as pd
 import gspread
 import json
 
-st.set_page_config(page_title="CALCULADORA NUTRICIONAL SAFOOD", layout="wide")
+st.set_page_config(page_title="CALCULADORA INFORMACIÓN NUTRICIONAL SAFOOD", layout="wide")
 
 st.image("logo.png", width=150)
-st.title("CALCULADORA NUTRICIONAL SAFOOD")
+st.title("CALCULADORA INFORMACIÓN NUTRICIONAL SAFOOD")
 
 # Leer secretos
 sa_info = json.loads(st.secrets["SERVICE_ACCOUNT_JSON"])
