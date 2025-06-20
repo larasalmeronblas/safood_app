@@ -77,7 +77,7 @@ with tab2:
         ing_sel = st.multiselect("Selecciona ingredientes", ingredientes_cliente["Nombre"].tolist())
         cantidades = {}
         for ing in ing_sel:
-            cantidad = st.number_input(f"Cantidad de {ing} (g)", 0.0, 1000.0, step=1.0)
+            cantidad = st.number_input(f"Cantidad de {ing} (g)", 0.0, 50000.0, step=1.0)
             cantidades[ing] = cantidad
         guardar = st.form_submit_button("Guardar receta")
 
@@ -140,5 +140,13 @@ with tab2:
 
         st.markdown("**Alérgenos presentes:**")
         st.markdown(", ".join([f"**{a.upper()}**" for a in lista_alergenos]))
+
+        st.subheader("📦 Porcentaje de cada ingrediente en la receta")
+
+        tabla_porcentajes = receta_df[["Ingrediente", "Cantidad"]].copy()
+        peso_total = receta_df["Cantidad"].sum()
+        tabla_porcentajes["%"] = (tabla_porcentajes["Cantidad"] / peso_total * 100).round(2)
+
+        st.dataframe(tabla_porcentajes)
     else:
         st.warning("No se encontraron registros de esa receta para ese cliente.")
